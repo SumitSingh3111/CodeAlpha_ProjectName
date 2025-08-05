@@ -1,0 +1,112 @@
+#include iostream
+#include vector
+#include fstream
+#include sstream
+#include limits
+
+using namespace std;
+
+class Task {
+public
+    string description;
+    string category;
+    bool isCompleted;
+
+    Task(string desc, string cat, bool status = false)
+         description(desc), category(cat), isCompleted(status) {}
+};
+
+void loadTasks(vectorTask& tasks, const string& filename) {
+    tasks.clear();
+    ifstream in(filename.c_str());    === FIX
+    if (!in) return;
+
+    string line, desc, cat;
+    bool status;
+    while (getline(in, line)) {
+        stringstream ss(line);
+        getline(ss, desc, '');
+        getline(ss, cat, '');
+        ss  status;
+        tasks.push_back(Task(desc, cat, status));
+    }
+    in.close();
+}
+
+void saveTasks(const vectorTask& tasks, const string& filename) {
+    ofstream out(filename.c_str());   === FIX
+    for (auto& t  tasks) {
+        out  t.description    t.category    t.isCompleted  n;
+    }
+    out.close();
+}
+
+int main() {
+    const string filename = tasks.txt;
+    vectorTask tasks;
+
+     Load saved tasks
+    loadTasks(tasks, filename);
+
+     Add a new task
+    cin.ignore(numeric_limitsstreamsizemax(), 'n');
+    string desc, cat;
+    cout  Enter new task description ;
+    getline(cin, desc);
+    cout  Enter category ;
+    getline(cin, cat);
+
+    tasks.push_back(Task(desc, cat));
+    cout  Task added.n;
+
+     Mark a task as completed
+    cout  nPending Tasksn;
+    int pendingIndex = 0;
+    for (int i = 0; i  tasks.size(); i++) {
+        if (!tasks[i].isCompleted)
+            cout  ++pendingIndex  . [  tasks[i].category  ]   tasks[i].description  endl;
+    }
+
+    if (pendingIndex  0) {
+        int choice;
+        cout  Enter task number to mark complete ;
+        cin  choice;
+        int idx = 0;
+        for (int i = 0; i  tasks.size(); i++) {
+            if (!tasks[i].isCompleted) {
+                idx++;
+                if (idx == choice) {
+                    tasks[i].isCompleted = true;
+                    break;
+                }
+            }
+        }
+        cout  Task marked completed.n;
+    }
+    else {
+        cout  No pending tasks.n;
+    }
+
+     Show Pending and Completed tasks
+    cout  n--- Pending Tasks ---n;
+    int count = 0;
+    for (auto& t  tasks) {
+        if (!t.isCompleted)
+            cout  ++count  . [  t.category  ]   t.description  n;
+    }
+    if (count == 0) cout  Nonen;
+
+    cout  n--- Completed Tasks ---n;
+    count = 0;
+    for (auto& t  tasks) {
+        if (t.isCompleted)
+            cout  ++count  . [  t.category  ]   t.description  n;
+    }
+    if (count == 0) cout  Nonen;
+
+     Save to file
+    saveTasks(tasks, filename);
+    cout  nTasks updated in   filename  endl;
+
+    return 0;
+}
